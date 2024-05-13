@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace NZWalks.Models
 {
@@ -14,7 +15,7 @@ namespace NZWalks.Models
         [MaxLength(100)]
         public string Name { get; set; }
 
-
+        [DisplayName("Region Image URL")]
         public string? RegionImageUrl { get; set; }
     }
 }

@@ -46,9 +46,14 @@ namespace NZWalks.Controllers
                 return BadRequest(ModelState);
 
             var region = model.ToCreateRegionDto();
+
             _context.Regions.Add(region);   
             _context.SaveChanges();
-            return Ok();
+
+            // To display it to the user
+            var regionDto = region.ToRegionDto();
+
+            return CreatedAtAction(nameof(GetById),new {id = region.Id}, regionDto);
         }
 
 
