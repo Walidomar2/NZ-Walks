@@ -45,7 +45,7 @@ namespace NZWalks.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var region = model.ToCreateRegionDto();
+            var region = model.FromCreateRegionToRegion();
 
             _context.Regions.Add(region);   
             _context.SaveChanges();
@@ -56,6 +56,43 @@ namespace NZWalks.Controllers
             return CreatedAtAction(nameof(GetById),new {id = region.Id}, regionDto);
         }
 
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public IActionResult Update([FromBody] UpdateRegionDTO model, [FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var region = _context.Regions.FirstOrDefault(r => r.Id == id);
+            if(region == null)
+                return NotFound();
+
+            region.Code = model.Code;
+            region.Name = model.Name;   
+            region.RegionImageUrl = model.RegionImageUrl;
+
+            _context.SaveChanges();
+
+            var regionDto = region.ToRegionDto();
+
+            return Ok(regionDto);
+
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            var region = _context.Regions.FirstOrDefault(r => r.Id == id);
+
+            if (region == null)
+                return NotFound();
+            _context.Regions.Remove(region);
+            _context.SaveChanges();
+
+            return Ok();
+        }
 
     }
 }

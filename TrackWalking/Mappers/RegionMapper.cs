@@ -17,7 +17,7 @@ namespace NZWalks.Mappers
         }
 
 
-        public static Region ToCreateRegionDto(this CreateRegionDTO model) 
+        public static Region FromCreateRegionToRegion(this CreateRegionDTO model) 
         {
             return new Region
             {
@@ -27,6 +27,15 @@ namespace NZWalks.Mappers
             };
         }
 
+        //public static Region FromUpdateRegionToRegion(this UpdateRegionDTO model)
+        //{
+        //    return new Region
+        //    {
+        //        Name = model.Name,
+        //        Code = model.Code,
+        //        RegionImageUrl = model.RegionImageUrl
+        //    };
+        //}
 
     }
 }
