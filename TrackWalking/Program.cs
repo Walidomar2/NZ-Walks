@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
+using NZWalks.Interfaces;
+using NZWalks.Repository;
 
 namespace App
 {
@@ -18,7 +20,7 @@ namespace App
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddScoped<IRegionRepository,RegionRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

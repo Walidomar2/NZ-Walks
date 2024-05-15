@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.Data;
 using NZWalks.DTOs.Region;
+using NZWalks.Interfaces;
 using NZWalks.Mappers;
 
 namespace NZWalks.Controllers
@@ -10,18 +11,17 @@ namespace NZWalks.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public RegionsController(ApplicationDbContext context)
+     
+        private readonly IRegionRepository _regionRepository;
+        public RegionsController(IRegionRepository regionRepository)
         {
-            _context = context;
+           _regionRepository = regionRepository;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var regions = _context.Regions.ToList();
-
+            var regions = await _regionRepository.GetAllAsync();
             var regionsDTOs = regions.Select(r => r.ToRegionDto()).ToList();
 
             return Ok(regionsDTOs);
@@ -29,9 +29,9 @@ namespace NZWalks.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        public IActionResult GetById([FromRoute] Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var region = _context.Regions.FirstOrDefault(x => x.Id == id);
+            var region = await _regionRepository.GetAsync(id);
 
             if (region == null)
                 return NotFound();
@@ -40,38 +40,32 @@ namespace NZWalks.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateRegionDTO model)
-        {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var region = model.FromCreateRegionToRegion();
-
-            _context.Regions.Add(region);   
-            _context.SaveChanges();
-
-            // To display it to the user
-            var regionDto = region.ToRegionDto();
-
-            return CreatedAtAction(nameof(GetById),new {id = region.Id}, regionDto);
-        }
-
-        [HttpPut]
-        [Route("{id:Guid}")]
-        public IActionResult Update([FromBody] UpdateRegionDTO model, [FromRoute] Guid id)
+        public async Task<IActionResult> Create([FromBody] CreateRegionDTO model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var region = _context.Regions.FirstOrDefault(r => r.Id == id);
-            if(region == null)
+          var region = await _regionRepository.CreateAsync(model);
+
+            if (region == null)
+                return BadRequest(ModelState);
+           
+            // To display it to the user
+            var regionDto = region.ToRegionDto();
+
+            return CreatedAtAction(nameof(GetById), new { id = region.Id }, regionDto);
+        }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Update([FromBody] UpdateRegionDTO model, [FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+           var region = await _regionRepository.UpdateAsync(model,id);
+            if (region == null)
                 return NotFound();
-
-            region.Code = model.Code;
-            region.Name = model.Name;   
-            region.RegionImageUrl = model.RegionImageUrl;
-
-            _context.SaveChanges();
 
             var regionDto = region.ToRegionDto();
 
@@ -82,16 +76,15 @@ namespace NZWalks.Controllers
         [HttpDelete]
         [Route("{id:Guid}")]
 
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var region = _context.Regions.FirstOrDefault(r => r.Id == id);
-
+            var region = await _regionRepository.DeleteAsync(id);
             if (region == null)
                 return NotFound();
-            _context.Regions.Remove(region);
-            _context.SaveChanges();
 
-            return Ok();
+            var regionDto = region.ToRegionDto();
+
+            return Ok(regionDto);
         }
 
     }
