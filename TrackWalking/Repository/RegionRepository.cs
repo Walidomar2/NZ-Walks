@@ -17,15 +17,15 @@ namespace NZWalks.Repository
         }
 
 
-        public async Task<Region?> CreateAsync(CreateRegionDTO model)
+        public async Task<Region?> CreateAsync(Region model)
         {
             if (model == null)
                 return null;
-            var newRegion = model.FromCreateRegionToRegion();
-            await _context.Regions.AddAsync(newRegion);
+         
+            await _context.Regions.AddAsync(model);
             await _context.SaveChangesAsync();  
 
-            return newRegion;
+            return model;
         }
 
         public async Task<Region?> DeleteAsync(Guid id)
@@ -55,7 +55,7 @@ namespace NZWalks.Repository
             return region;
         }
 
-        public async Task<Region?> UpdateAsync(UpdateRegionDTO model, Guid id)
+        public async Task<Region?> UpdateAsync(Region model, Guid id)
         {
             var region = await _context.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (region == null)

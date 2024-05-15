@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.Data;
 using NZWalks.DTOs.Region;
 using NZWalks.Interfaces;
 using NZWalks.Mappers;
+using NZWalks.Models;
 
 namespace NZWalks.Controllers
 {
@@ -13,18 +15,22 @@ namespace NZWalks.Controllers
     {
      
         private readonly IRegionRepository _regionRepository;
-        public RegionsController(IRegionRepository regionRepository)
+        private readonly IMapper _mapper;
+
+        public RegionsController(IRegionRepository regionRepository,
+            IMapper mapper)
         {
-           _regionRepository = regionRepository;
+            _regionRepository = regionRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var regions = await _regionRepository.GetAllAsync();
-            var regionsDTOs = regions.Select(r => r.ToRegionDto()).ToList();
-
-            return Ok(regionsDTOs);
+            //var regionsDTOs = regions.Select(r => r.ToRegionDto()).ToList();
+  
+            return Ok(_mapper.Map<List<RegionDTO>>(regions));
         }
 
         [HttpGet]
@@ -36,7 +42,7 @@ namespace NZWalks.Controllers
             if (region == null)
                 return NotFound();
 
-            return Ok(region.ToRegionDto());
+            return Ok(_mapper.Map<RegionDTO>(region));
         }
 
         [HttpPost]
@@ -45,13 +51,15 @@ namespace NZWalks.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-          var region = await _regionRepository.CreateAsync(model);
+           var region = _mapper.Map<Region>(model);
+
+           region = await _regionRepository.CreateAsync(region);
 
             if (region == null)
                 return BadRequest(ModelState);
-           
+
             // To display it to the user
-            var regionDto = region.ToRegionDto();
+            var regionDto = _mapper.Map<RegionDTO>(region);
 
             return CreatedAtAction(nameof(GetById), new { id = region.Id }, regionDto);
         }
@@ -63,13 +71,14 @@ namespace NZWalks.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-           var region = await _regionRepository.UpdateAsync(model,id);
+            var region = _mapper.Map<Region>(model);
+
+            region = await _regionRepository.UpdateAsync(region, id);
+
             if (region == null)
                 return NotFound();
 
-            var regionDto = region.ToRegionDto();
-
-            return Ok(regionDto);
+            return Ok(_mapper.Map<RegionDTO>(region));
 
         }
 
@@ -82,9 +91,7 @@ namespace NZWalks.Controllers
             if (region == null)
                 return NotFound();
 
-            var regionDto = region.ToRegionDto();
-
-            return Ok(regionDto);
+            return Ok(_mapper.Map<RegionDTO>(region));
         }
 
     }
