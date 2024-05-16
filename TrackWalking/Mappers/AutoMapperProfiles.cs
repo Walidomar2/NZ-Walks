@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using NZWalks.DTOs.Region;
+using NZWalks.DTOs.Walk;
 using NZWalks.Models;
 
 namespace NZWalks.Mappers
@@ -11,6 +12,8 @@ namespace NZWalks.Mappers
             CreateMap<Region, RegionDTO>().ReverseMap();
             CreateMap<Region, CreateRegionDTO>().ReverseMap();  
             CreateMap<Region, UpdateRegionDTO>().ReverseMap();
+            CreateMap<Walk,CreateWalkDTO>().ReverseMap();
+            CreateMap<Walk,WalkDTO>().ReverseMap(); 
         }
     }
 }
