@@ -44,7 +44,7 @@ namespace NZWalks.Controllers
 
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var walk = await _walkRepository.GetAsync(id);
@@ -56,10 +56,30 @@ namespace NZWalks.Controllers
             return Ok(_mapper.Map<WalkDTO>(walk));
         }
 
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Update([FromBody] UpdateWalkDTO updateModel, Guid id)
+        {
+            var newWalk = _mapper.Map<Walk>(updateModel);
+            newWalk = await _walkRepository.UpdateAsync(newWalk, id);
 
+            if (newWalk == null)
+            {
+                return NotFound(); 
+            }
 
+            return Ok(_mapper.Map<WalkDTO>(newWalk));
+        }
 
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var walk = await _walkRepository.DeleteAsync(id);
+            if(walk == null)
+                return NotFound();
 
-
+            return Ok(_mapper.Map<WalkDTO>(walk));
+        }
     }
 }
