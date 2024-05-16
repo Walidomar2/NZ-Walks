@@ -1,4 +1,5 @@
-﻿using NZWalks.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using NZWalks.Data;
 using NZWalks.Interfaces;
 using NZWalks.Models;
 
@@ -20,6 +21,22 @@ namespace NZWalks.Repository
             await _context.Walks.AddAsync(model);
             await _context.SaveChangesAsync();  
             return model;
+        }
+
+        public async Task<List<Walk>> GetAllAsync()
+        {
+            return await _context.Walks.Include(x => x.Region).Include(x => x.Difficulty).ToListAsync();
+        }
+
+        public async Task<Walk?> GetAsync(Guid id)
+        {
+            return await _context.Walks.Include(x => x.Region)
+                .Include(x => x.Difficulty).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public Task<Walk?> UpdateAsync(Walk model)
+        {
+            throw new NotImplementedException();
         }
     }
 }
