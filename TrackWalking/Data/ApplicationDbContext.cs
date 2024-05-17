@@ -16,12 +16,12 @@ namespace NZWalks.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Region>().HasData(LoadRegions());
-            modelBuilder.Entity<Difficulty>().HasData(LoadDifficulties());
+            //modelBuilder.Entity<Region>().HasData(LoadRegions());
+            //modelBuilder.Entity<Difficulty>().HasData(LoadDifficulties());
 
         }
 
-        private List<Region> LoadRegions()
+        /*private List<Region> LoadRegions()
         {
             return new List<Region>
             {
@@ -62,8 +62,9 @@ namespace NZWalks.Data
                  }
             };
         }
+        */
 
-        private List<Difficulty> LoadDifficulties()
+       /* private List<Difficulty> LoadDifficulties()
         {
             return new List<Difficulty>
             {
@@ -83,7 +84,7 @@ namespace NZWalks.Data
                    Name = "Hard"
                }
             };
-        }
+        }*/
 
 
 
