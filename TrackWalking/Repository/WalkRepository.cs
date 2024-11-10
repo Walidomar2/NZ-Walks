@@ -58,15 +58,13 @@ namespace NZWalks.Repository
                     else
                         walks = walks.OrderByDescending(x => x.Name);
                 }
-
-                if (sortBy.Equals("Length", StringComparison.OrdinalIgnoreCase))
+                else if (sortBy.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
                     if (isAscending == true)
-                        walks = walks.OrderBy(x => x.Name);
+                        walks = walks.OrderBy(x => x.LengthInKm);
                     else
-                        walks = walks.OrderByDescending(x => x.Name);
+                        walks = walks.OrderByDescending(x => x.LengthInKm);
                 }
-
             }
 
             return await walks.ToListAsync();
