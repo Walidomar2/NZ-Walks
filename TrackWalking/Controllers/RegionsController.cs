@@ -26,9 +26,10 @@ namespace NZWalks.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string? filterOn = null, string? filterQuery = null)
+        public async Task<IActionResult> GetAll(string? filterOn = null, string? filterQuery = null,
+                                        [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
         {
-            var regions = await _regionRepository.GetAllAsync(filterOn, filterQuery);
+            var regions = await _regionRepository.GetAllAsync(filterOn, filterQuery,pageNumber,pageSize);
             //var regionsDTOs = regions.Select(r => r.ToRegionDto()).ToList();
   
             return Ok(_mapper.Map<List<RegionDTO>>(regions));

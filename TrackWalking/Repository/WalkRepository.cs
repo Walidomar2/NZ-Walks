@@ -35,7 +35,7 @@ namespace NZWalks.Repository
         }
 
         public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
-           string? sortBy = null,bool? isAscending = false)
+           string? sortBy = null,bool? isAscending = false, int pageNumber = 1, int pageSize = 1000)
         {
             var walks =  _context.Walks.Include(x => x.Region)
                                        .Include(x => x.Difficulty)
@@ -67,7 +67,7 @@ namespace NZWalks.Repository
                 }
             }
 
-            return await walks.ToListAsync();
+            return await walks.Skip((pageNumber - 1)*pageSize).Take(pageSize).ToListAsync();
         }
 
         public async Task<Walk?> GetAsync(Guid id)

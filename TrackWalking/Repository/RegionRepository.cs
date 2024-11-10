@@ -40,7 +40,8 @@ namespace NZWalks.Repository
             return region;
         }
 
-        public async Task<List<Region>> GetAllAsync(string? filterOn = null, string? filterQuery = null)
+        public async Task<List<Region>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
+                                        int pageNumber = 1, int pageSize = 1000)
         {
             var regions =  _context.Regions.AsQueryable();
 
@@ -52,7 +53,7 @@ namespace NZWalks.Repository
                 }
             }
 
-            return await regions.ToListAsync();
+            return await regions.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
         public async Task<Region?> GetAsync(Guid id)
