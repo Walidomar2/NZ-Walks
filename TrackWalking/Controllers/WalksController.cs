@@ -23,7 +23,7 @@ namespace NZWalks.Controllers
         public async Task<IActionResult> Create([FromBody] CreateWalkDTO model)
         {
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             var walk = _mapper.Map<Walk>(model);
 
@@ -31,10 +31,10 @@ namespace NZWalks.Controllers
 
             if (walk == null)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            return Ok(_mapper.Map<WalkDTO>(walk));
+            return CreatedAtAction(nameof(GetById), new {id= walk.Id}, _mapper.Map<WalkDTO>(walk));
         }
 
         [HttpGet]
@@ -65,7 +65,7 @@ namespace NZWalks.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateWalkDTO updateModel, Guid id)
         {
             if(! ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
 
             var newWalk = _mapper.Map<Walk>(updateModel);
