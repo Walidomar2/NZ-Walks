@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.CustomActionFilters;
@@ -22,6 +23,7 @@ namespace NZWalks.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] CreateWalkDTO model)
         {
 
@@ -38,6 +40,7 @@ namespace NZWalks.Controllers
         }
 
         [HttpGet]
+        [Authorize] // Reader and Writer can Read data
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool? isAscending,[FromQuery] int pageNumber=1, [FromQuery] int pageSize=1000)
         {
@@ -49,6 +52,7 @@ namespace NZWalks.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize] // Reader and Writer can Read data
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var walk = await _walkRepository.GetAsync(id);
@@ -63,6 +67,7 @@ namespace NZWalks.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromBody] UpdateWalkDTO updateModel, Guid id)
         {
 
@@ -79,6 +84,7 @@ namespace NZWalks.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var walk = await _walkRepository.DeleteAsync(id);
