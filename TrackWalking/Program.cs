@@ -8,6 +8,7 @@ using NZWalks.Data;
 using NZWalks.Interfaces;
 using NZWalks.Mappers;
 using NZWalks.Repository;
+using Serilog;
 using System.Text;
 
 namespace App
@@ -17,6 +18,16 @@ namespace App
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // adding serilog 
+            var logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File("Logs/NZwalks_logs.txt", rollingInterval: RollingInterval.Day)
+                .MinimumLevel.Information()
+                .CreateLogger();
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger);
 
             // Add services to the container.
             builder.Services.AddDbContext<ApplicationDbContext>(options =>

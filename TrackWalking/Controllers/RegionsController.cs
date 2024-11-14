@@ -8,6 +8,7 @@ using NZWalks.DTOs.Region;
 using NZWalks.Interfaces;
 using NZWalks.Mappers;
 using NZWalks.Models;
+using System.Text.Json;
 
 namespace NZWalks.Controllers
 {
@@ -19,12 +20,14 @@ namespace NZWalks.Controllers
      
         private readonly IRegionRepository _regionRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<RegionsController> _logger;
 
         public RegionsController(IRegionRepository regionRepository,
-            IMapper mapper)
+            IMapper mapper, ILogger<RegionsController> logger)
         {
             _regionRepository = regionRepository;
             _mapper = mapper;
+            _logger = logger;
         }
         
         [HttpGet]
@@ -32,9 +35,13 @@ namespace NZWalks.Controllers
         public async Task<IActionResult> GetAll(string? filterOn = null, string? filterQuery = null,
                                         [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
         {
+            _logger.LogInformation("GETALL Regions action method was invoked");
+
+
             var regions = await _regionRepository.GetAllAsync(filterOn, filterQuery,pageNumber,pageSize);
             //var regionsDTOs = regions.Select(r => r.ToRegionDto()).ToList();
-  
+
+            _logger.LogInformation($"Finished GETALL Regions with the data: {JsonSerializer.Serialize(_mapper.Map<List<RegionDTO>>(regions))}");
             return Ok(_mapper.Map<List<RegionDTO>>(regions));
         }
 
