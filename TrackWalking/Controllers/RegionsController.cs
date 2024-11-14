@@ -31,7 +31,7 @@ namespace NZWalks.Controllers
         }
         
         [HttpGet]
-        [Authorize] // Reader and Writer can Read data
+       // [Authorize] // Reader and Writer can Read data
         public async Task<IActionResult> GetAll(string? filterOn = null, string? filterQuery = null,
                                         [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
         {
@@ -46,7 +46,7 @@ namespace NZWalks.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        [Authorize] // Reader and Writer can Read data
+       // [Authorize] // Reader and Writer can Read data
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var region = await _regionRepository.GetAsync(id);
@@ -59,7 +59,7 @@ namespace NZWalks.Controllers
 
         [HttpPost]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+       // [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] CreateRegionDTO model)
         {
           
@@ -79,7 +79,7 @@ namespace NZWalks.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+       // [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromBody] UpdateRegionDTO model, [FromRoute] Guid id)
         {
           
@@ -96,7 +96,7 @@ namespace NZWalks.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+      //  [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var region = await _regionRepository.DeleteAsync(id);
