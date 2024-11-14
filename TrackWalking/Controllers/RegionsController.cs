@@ -39,8 +39,7 @@ namespace NZWalks.Controllers
 
 
             var regions = await _regionRepository.GetAllAsync(filterOn, filterQuery,pageNumber,pageSize);
-            //var regionsDTOs = regions.Select(r => r.ToRegionDto()).ToList();
-
+           // throw new Exception("This is a new exception for testing");
             _logger.LogInformation($"Finished GETALL Regions with the data: {JsonSerializer.Serialize(_mapper.Map<List<RegionDTO>>(regions))}");
             return Ok(_mapper.Map<List<RegionDTO>>(regions));
         }

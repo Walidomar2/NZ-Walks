@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -7,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using NZWalks.Data;
 using NZWalks.Interfaces;
 using NZWalks.Mappers;
+using NZWalks.Middlewares;
 using NZWalks.Repository;
 using Serilog;
 using System.Text;
@@ -116,9 +118,8 @@ namespace App
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<NZWalks.Middlewares.ExceptionHandlerMiddleware>();
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
